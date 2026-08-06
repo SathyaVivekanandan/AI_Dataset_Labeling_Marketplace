@@ -17,7 +17,6 @@ ai_dataset_labeling_marketplace
 | created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
 
 ---
-
 ## Table 2: datasets
 
 | Column Name | Data Type | Constraints |
