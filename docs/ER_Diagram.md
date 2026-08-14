@@ -1,13 +1,14 @@
-# Entity Relationship (ER) Diagram
+# Entity Relationship Diagram
 
 ```mermaid
 erDiagram
+
     USER {
         BIGINT id PK
         VARCHAR name
         VARCHAR email UK
         VARCHAR password
-        VARCHAR role
+        ENUM role
     }
 
     DATASET {
@@ -18,12 +19,41 @@ erDiagram
         BIGINT owner_id FK
     }
 
-    USER ||--o{ DATASET : owns
-```
+    PROJECT {
+        BIGINT id PK
+        VARCHAR project_name
+        VARCHAR status
+        BIGINT dataset_id FK
+        BIGINT owner_id FK
+    }
 
-## Relationship
-- One `USER` can own many `DATASET` records.
-- Each `DATASET` belongs to one `USER`.
-- `USER.id` is the primary key.
-- `DATASET.id` is the primary key.
-- `DATASET.owner_id` is a foreign key referencing `USER.id`.
+    TASK {
+        BIGINT id PK
+        BIGINT project_id FK
+        BIGINT annotator_id FK
+        VARCHAR status
+    }
+
+    ANNOTATION {
+        BIGINT id PK
+        BIGINT task_id FK
+        VARCHAR label
+        VARCHAR status
+    }
+
+    REVIEW {
+        BIGINT id PK
+        BIGINT annotation_id FK
+        BIGINT reviewer_id FK
+        VARCHAR review_status
+        VARCHAR remarks
+    }
+
+    USER ||--o{ DATASET : owns
+    USER ||--o{ PROJECT : creates
+    DATASET ||--o{ PROJECT : contains
+    PROJECT ||--o{ TASK : contains
+    USER ||--o{ TASK : assigned
+    TASK ||--o{ ANNOTATION : has
+    ANNOTATION ||--o{ REVIEW : receives
+    USER ||--o{ REVIEW : performs
