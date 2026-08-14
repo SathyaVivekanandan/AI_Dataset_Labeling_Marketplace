@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+MAVEN_VERSION=3.9.11
+BASE="$HOME/.m2/wrapper"
+MAVEN_HOME="$BASE/apache-maven-$MAVEN_VERSION"
+if [ ! -x "$MAVEN_HOME/bin/mvn" ]; then
+  mkdir -p "$BASE"
+  ZIP="$BASE/apache-maven-$MAVEN_VERSION-bin.zip"
+  curl -fL "https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.zip" -o "$ZIP"
+  unzip -q -o "$ZIP" -d "$BASE"
+fi
+exec "$MAVEN_HOME/bin/mvn" "$@"
