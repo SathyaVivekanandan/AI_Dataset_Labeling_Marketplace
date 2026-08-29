@@ -1,0 +1,10 @@
+{
+  "name": "labelai-frontend",
+  "version": "2.0.0",
+  "private": true,
+  "description": "LabelAI frontend",
+  "scripts": {
+    "start": "npx live-server . --port=5500",
+    "test": "node --check app.js"
+  }
+}
