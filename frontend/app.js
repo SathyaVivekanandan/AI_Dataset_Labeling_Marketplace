@@ -1,4 +1,4 @@
-const API = "http://localhost:8080/api";
+const API = "http://localhost:8081/api";
 
 let me = JSON.parse(localStorage.getItem("labelai_user") || "null");
 
@@ -126,12 +126,16 @@ async function login() {
             })
         });
 
-        // Save complete login response
-        me = loginData;
+       
+        // Extract the actual login payload from the API response
+        const payload = loginData.data ?? loginData;
+
+        // Save user details and JWT token
+        me = payload;
 
         // Make sure JWT exists
         if (!me.token) {
-            throw new Error("Login successful but JWT token was not received.");
+            throw new Error("Login response did not contain a JWT token.");
         }
 
         localStorage.setItem(
@@ -168,27 +172,38 @@ async function load() {
 
     try {
 
-        const [
-            datasets,
-            projects,
-            tasks,
-            annotations,
-            reviews,
-            users
-        ] = await Promise.all([
+       
+const [
+    datasetsResponse,
+    projectsResponse,
+    tasksResponse,
+    annotationsResponse,
+    reviewsResponse,
+    usersResponse
+] = await Promise.all([
+    req("/datasets"),
+    req("/projects"),
+    req("/tasks"),
+    req("/annotations"),
+    req("/reviews"),
+    req("/auth/users")
+]);
 
-            req("/datasets"),
+// Support both direct arrays and wrapped API responses
+const getArray = (response) => {
+    if (Array.isArray(response)) return response;
+    if (Array.isArray(response?.data)) return response.data;
+    if (Array.isArray(response?.data?.content)) return response.data.content;
+    if (Array.isArray(response?.content)) return response.content;
+    return [];
+};
 
-            req("/projects"),
-
-            req("/tasks"),
-
-            req("/annotations"),
-
-            req("/reviews"),
-
-            req("/auth/users")
-        ]);
+const datasets = getArray(datasetsResponse);
+const projects = getArray(projectsResponse);
+const tasks = getArray(tasksResponse);
+const annotations = getArray(annotationsResponse);
+const reviews = getArray(reviewsResponse);
+const users = getArray(usersResponse);
 
 
         // ===============================
