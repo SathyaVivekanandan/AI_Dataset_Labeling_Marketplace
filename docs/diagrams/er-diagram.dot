@@ -1,0 +1,19 @@
+digraph LabelAIER {
+  graph [rankdir=LR, bgcolor="white", pad="0.25", nodesep="0.45", ranksep="0.75", label="LabelAI — Entity Relationship Diagram", labelloc=t, fontsize=20, fontname="Arial"];
+  node [shape=record, style="filled", fontname="Arial", fontsize=9, margin="0.12,0.08", color="#cbd5e1", fillcolor="#f8fafc"];
+  edge [fontname="Arial", fontsize=9, color="#64748b", arrowsize=0.7];
+  users [label="{USERS|PK id : BIGINT\lname : VARCHAR(100)\lemail : VARCHAR(100) UNIQUE\lpassword : VARCHAR(255) hash\lrole : VARCHAR / ENUM\l}", fillcolor="#e9e8ff"];
+  datasets [label="{DATASETS|PK id : BIGINT\ltitle : VARCHAR(150)\ldescription : VARCHAR(500)\lfile_path : VARCHAR(500)\lFK owner_id : BIGINT\l}", fillcolor="#e1f3ed"];
+  projects [label="{PROJECTS|PK id : BIGINT\lproject_name : VARCHAR(150)\lstatus : VARCHAR(50)\lFK dataset_id : BIGINT\lFK owner_id : BIGINT\l}", fillcolor="#e6f1ff"];
+  tasks [label="{TASKS|PK id : BIGINT\lstatus : VARCHAR(50)\lFK project_id : BIGINT\lFK annotator_id : BIGINT\l}", fillcolor="#fff0d8"];
+  annotations [label="{ANNOTATIONS|PK id : BIGINT\llabel : VARCHAR(255)\lFK task_id : BIGINT\l}", fillcolor="#fce8ed"];
+  reviews [label="{REVIEWS|PK id : BIGINT\lreview_status : VARCHAR(50)\lremarks : VARCHAR(500)\lFK annotation_id : BIGINT\lFK reviewer_id : BIGINT\l}", fillcolor="#f1f5fb"];
+  users -> datasets [label="owns 1:N"];
+  users -> projects [label="creates 1:N"];
+  datasets -> projects [label="used by 1:N"];
+  projects -> tasks [label="contains 1:N"];
+  users -> tasks [label="assigned annotator 1:N"];
+  tasks -> annotations [label="has 1:N"];
+  annotations -> reviews [label="reviewed 1:N"];
+  users -> reviews [label="reviews 1:N"];
+}

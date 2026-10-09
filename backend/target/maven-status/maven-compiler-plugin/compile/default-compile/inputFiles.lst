@@ -2,6 +2,7 @@ C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\ba
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\controller\AuthController.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\controller\DatasetController.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\controller\FileController.java
+C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\controller\HealthController.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\controller\ProjectController.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\controller\ReviewController.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\controller\TaskController.java
@@ -25,3 +26,4 @@ C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\ba
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\security\JwtService.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\security\SecurityConfig.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\service\UserService.java
+C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\service\UserServiceTest.java

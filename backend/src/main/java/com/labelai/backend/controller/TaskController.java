@@ -8,13 +8,14 @@ import com.labelai.backend.repository.TaskRepository;
 import com.labelai.backend.repository.UserRepository;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "*")
 public class TaskController {
 
     private final TaskRepository taskRepository;
@@ -43,6 +44,7 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<?> createTask(
             @RequestParam Long projectId,
@@ -55,13 +57,11 @@ public class TaskController {
                 .orElse(null);
 
         if (project == null) {
-            return ResponseEntity.badRequest()
-                    .body("Project not found");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "data", Map.of(), "message", "Project not found"));
         }
 
         if (annotator == null) {
-            return ResponseEntity.badRequest()
-                    .body("Annotator not found");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "data", Map.of(), "message", "Annotator not found"));
         }
 
         Task task = new Task(project, annotator);
@@ -69,8 +69,9 @@ public class TaskController {
         return ResponseEntity.ok(taskRepository.save(task));
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteTask(@PathVariable Long id) {
 
         if (!taskRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -78,6 +79,6 @@ public class TaskController {
 
         taskRepository.deleteById(id);
 
-        return ResponseEntity.ok("Task deleted successfully");
+        return ResponseEntity.ok(Map.of("message", "Task deleted successfully"));
     }
 }

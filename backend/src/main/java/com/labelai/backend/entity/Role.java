@@ -4,6 +4,5 @@ public enum Role {
     ADMIN,
     OWNER,
     ANNOTATOR,
-    REVIEWER,
-    LABELER
+    REVIEWER
 }

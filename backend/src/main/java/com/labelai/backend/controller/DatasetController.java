@@ -6,13 +6,14 @@ import com.labelai.backend.repository.DatasetRepository;
 import com.labelai.backend.repository.UserRepository;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/datasets")
-@CrossOrigin(origins = "*")
 public class DatasetController {
 
     private final DatasetRepository datasetRepository;
@@ -41,6 +42,7 @@ public class DatasetController {
     }
 
     // Create dataset
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<?> createDataset(
             @RequestParam Long userId,
@@ -51,8 +53,7 @@ public class DatasetController {
                 .orElse(null);
 
         if (owner == null) {
-            return ResponseEntity.badRequest()
-                    .body("User not found");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "data", Map.of(), "message", "User not found"));
         }
 
         Dataset dataset = new Dataset(
@@ -66,8 +67,9 @@ public class DatasetController {
     }
 
     // Delete dataset
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDataset(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteDataset(@PathVariable Long id) {
 
         if (!datasetRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -75,7 +77,7 @@ public class DatasetController {
 
         datasetRepository.deleteById(id);
 
-        return ResponseEntity.ok("Dataset deleted successfully");
+        return ResponseEntity.ok(Map.of("message", "Dataset deleted successfully"));
     }
 
     // Request body class

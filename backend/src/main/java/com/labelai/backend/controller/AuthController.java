@@ -61,10 +61,7 @@ public class AuthController {
                 })
                 .orElseGet(() ->
                         ResponseEntity.status(401)
-                                .body(Map.of(
-                                        "message",
-                                        "Invalid email or password"
-                                ))
+                                .body(Map.of("success", false, "data", Map.of(), "message", "Invalid email or password"))
                 );
     }
 }

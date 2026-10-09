@@ -1,37 +1,19 @@
-# LabelAI – Review-II Checklist
+# Review-II Checklist — Full Product and Deployment
 
-## Product
-- [x] Spring Boot backend
-- [x] MySQL/JPA persistence
-- [x] React/static frontend
-- [x] JWT authentication foundation
-- [x] BCrypt password hashing
-- [x] Dataset, project, task, annotation and review APIs
-- [x] Health endpoint
-- [x] Swagger/OpenAPI dependency
-- [ ] Cloud database credentials configured
-- [ ] Backend public URL configured
-- [ ] Frontend public URL configured
+- [ ] Backend starts with environment variables and connects to managed MySQL.
+- [ ] Frontend is deployed and `VITE_API_URL` points to the backend.
+- [ ] Backend host CORS permits only the actual frontend origin(s).
+- [ ] Live URLs below open successfully from a separate network/browser.
+- [ ] Register/login returns JWT; invalid password is rejected.
+- [ ] Dataset upload and metadata persist across backend restart (requires durable/object storage in production).
+- [ ] Project, task, annotation, and review flows demonstrated end-to-end.
+- [ ] `/api/health` and Swagger UI are reachable.
+- [ ] Backend unit tests pass; frontend production build passes.
+- [ ] GitHub Actions checks are green on the final commit.
+- [ ] No secrets are committed; hosting environment variables are set.
+- [ ] README contains actual live URLs and real screenshots.
 
-## Quality
-- [x] JUnit 5 test foundation
-- [x] Frontend syntax check
-- [ ] Expand tests to project target (>=40% service-method coverage)
-- [x] Environment-variable based secrets
-- [x] Role-aware JWT authorities
-- [x] CORS configuration
-
-## CI/CD
-- [x] GitHub Actions CI workflow included
-- [ ] Add deployment secrets/hosting credentials
-
-## Evidence for Review-II
-1. Live frontend URL
-2. Live backend URL + `/api/health`
-3. Swagger UI URL
-4. GitHub Actions successful run
-5. JUnit test report
-6. ER, Class and Architecture diagrams
-7. README v2 and CHANGELOG
-
-> Cloud deployment cannot be completed inside this ZIP because it requires the team's hosting accounts, database credentials and secrets. The project includes deployment-ready configuration and a checklist for those final account-specific steps.
+Frontend URL: ____________________
+Backend URL: ____________________
+Swagger URL: ____________________
+Review date: ____________________

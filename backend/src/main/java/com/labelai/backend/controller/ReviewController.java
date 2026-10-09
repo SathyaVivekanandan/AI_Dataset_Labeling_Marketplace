@@ -8,13 +8,14 @@ import com.labelai.backend.repository.ReviewRepository;
 import com.labelai.backend.repository.UserRepository;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reviews")
-@CrossOrigin(origins = "*")
 public class ReviewController {
 
     private final ReviewRepository reviewRepository;
@@ -45,6 +46,7 @@ public class ReviewController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('REVIEWER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<?> createReview(
             @RequestParam Long annotationId,
@@ -60,13 +62,11 @@ public class ReviewController {
                         .orElse(null);
 
         if (annotation == null) {
-            return ResponseEntity.badRequest()
-                    .body("Annotation not found");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "data", Map.of(), "message", "Annotation not found"));
         }
 
         if (reviewer == null) {
-            return ResponseEntity.badRequest()
-                    .body("Reviewer not found");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "data", Map.of(), "message", "Reviewer not found"));
         }
 
         Review review = new Review(
@@ -81,8 +81,9 @@ public class ReviewController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReview(
+    public ResponseEntity<Map<String, String>> deleteReview(
             @PathVariable Long id) {
 
         if (!reviewRepository.existsById(id)) {
@@ -91,9 +92,7 @@ public class ReviewController {
 
         reviewRepository.deleteById(id);
 
-        return ResponseEntity.ok(
-                "Review deleted successfully"
-        );
+        return ResponseEntity.ok(Map.of("message", "Review deleted successfully"));
     }
 
     public static class ReviewRequest {

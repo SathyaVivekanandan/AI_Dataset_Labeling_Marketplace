@@ -1,0 +1,20 @@
+digraph LabelAIArchitecture {
+  graph [rankdir=LR, bgcolor="white", pad="0.25", nodesep="0.55", ranksep="0.8", label="LabelAI — System Architecture", labelloc=t, fontsize=20, fontname="Arial"];
+  node [shape=box, style="rounded,filled", fontname="Arial", fontsize=10, margin="0.18,0.12", color="#d5dbea"];
+  edge [fontname="Arial", fontsize=9, color="#7b879b", arrowsize=0.75];
+  browser [label="Client Browser\nReact 18 + Vite\nAxios UI", fillcolor="#e9e8ff"];
+  api [label="REST API\nSpring Boot 3.5\nJWT Security + Validation", fillcolor="#e1f3ed"];
+  services [label="Business Services\nUser / Dataset / Project\nTask / Annotation / Review", fillcolor="#f1f5fb"];
+  ai [label="AI Suggestion Service\nKeyword sentiment baseline\nHuman review required", fillcolor="#fff0d8"];
+  db [shape=cylinder, label="MySQL 8\n6 relational tables", fillcolor="#e6f1ff"];
+  files [shape=folder, label="Uploaded files\nLocal disk in prototype\nObject storage needed for cloud", fillcolor="#fce8ed"];
+  hosting [shape=component, label="Hosting boundary\nFrontend: Vercel / Netlify\nAPI: Render / Railway\nDB: managed MySQL", fillcolor="#f6f7fa", style="rounded,dashed,filled"];
+  browser -> api [label="HTTPS / JSON + JWT"];
+  api -> services [label="Controller → Service"];
+  services -> db [label="JPA / Hibernate"];
+  api -> ai [label="POST /api/ai/suggest"];
+  api -> files [label="multipart upload"];
+  hosting -> browser [style=dashed, arrowhead=none, label="hosts UI"];
+  hosting -> api [style=dashed, arrowhead=none, label="hosts API"];
+  hosting -> db [style=dashed, arrowhead=none, label="managed DB target"];
+}

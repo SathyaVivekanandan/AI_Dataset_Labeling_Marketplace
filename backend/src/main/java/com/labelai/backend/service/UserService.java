@@ -25,8 +25,15 @@ public UserService(
     // Create / Register User
     public User createUser(User user) {
 
+    if (user.getName() == null || user.getName().isBlank() || user.getEmail() == null || !user.getEmail().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$") || user.getPassword() == null || user.getPassword().length() < 8) {
+        throw new IllegalArgumentException("Provide a name, valid email, and password of at least 8 characters");
+    }
+    if (user.getRole() == null || (user.getRole() != com.labelai.backend.entity.Role.OWNER && user.getRole() != com.labelai.backend.entity.Role.ANNOTATOR)) {
+        throw new IllegalArgumentException("Public registration is limited to OWNER and ANNOTATOR roles");
+    }
+
     if (userRepository.existsByEmail(user.getEmail())) {
-        throw new RuntimeException("Email already registered");
+        throw new IllegalArgumentException("Email already registered");
     }
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -55,6 +62,9 @@ public UserService(
     }
     public Optional<User> login(String email, String password) {
 
+    if (email == null || email.isBlank() || password == null) {
+        return Optional.empty();
+    }
     Optional<User> userOptional = userRepository.findByEmail(email);
 
     if (userOptional.isPresent()) {

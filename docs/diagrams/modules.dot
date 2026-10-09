@@ -1,0 +1,17 @@
+digraph LabelAIModules {
+  graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.35", ranksep="0.55", label="LabelAI — Class / Module Dependency", labelloc=t, fontsize=20, fontname="Arial"];
+  node [shape=box, style="rounded,filled", fontname="Arial", fontsize=10, margin="0.16,0.1", color="#d5dbea"];
+  edge [color="#7b879b", arrowsize=0.7];
+  ui [label="React App\nmain.jsx + Axios", fillcolor="#e9e8ff"];
+  controllers [label="REST Controllers\nAuth / Dataset / Project\nTask / Annotation / Review\nAI Suggestion / Health", fillcolor="#e1f3ed"];
+  services [label="Services\nUserService\nJwtService\nAiSuggestionService", fillcolor="#fff0d8"];
+  repositories [label="Spring Data JPA Repositories\nUser / Dataset / Project\nTask / Annotation / Review", fillcolor="#e6f1ff"];
+  entities [label="Entities\nUser / Dataset / Project\nTask / Annotation / Review", fillcolor="#f1f5fb"];
+  db [shape=cylinder, label="MySQL Database", fillcolor="#e6f1ff"];
+  ui -> controllers [label="HTTP + JWT"];
+  controllers -> services;
+  controllers -> repositories [label="CRUD endpoints"];
+  services -> repositories;
+  repositories -> entities;
+  repositories -> db;
+}

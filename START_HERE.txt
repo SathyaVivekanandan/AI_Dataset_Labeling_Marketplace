@@ -1,0 +1,54 @@
+LABELAI CAPSTONE — START HERE (WINDOWS)
+======================================
+
+1) EXTRACT THE ZIP
+Extract this folder to a simple path such as C:\LabelAI_Capstone. Open that extracted folder in VS Code.
+
+2) CREATE THE DATABASE
+Open MySQL Workbench and run:
+    CREATE DATABASE IF NOT EXISTS labelai;
+
+3) START THE BACKEND
+Open a VS Code terminal at the project root and paste the commands below. Replace YOUR_MYSQL_PASSWORD with your real local MySQL password. Keep this terminal open.
+
+    $env:DB_URL="jdbc:mysql://localhost:3306/labelai?useSSL=false&serverTimezone=UTC"
+    $env:DB_USERNAME="root"
+    $env:DB_PASSWORD="YOUR_MYSQL_PASSWORD"
+    $env:JWT_SECRET="local-only-change-this-to-a-random-secret-key-32chars-minimum"
+    $env:JWT_EXPIRATION_MS="3600000"
+    $env:PORT="8080"
+    $env:FRONTEND_ORIGIN="http://localhost:5173"
+    cd backend
+    .\mvnw.cmd spring-boot:run
+
+Wait for Spring Boot to finish starting. Check http://localhost:8080/api/health .
+If Maven download fails, make sure internet access works or use your installed Maven executable (`mvn.cmd`) from its full path.
+
+4) START THE FRONTEND
+Open a SECOND terminal in VS Code at the project root and paste:
+
+    cd frontend
+    npm install
+    npm run dev
+
+Open the URL printed by Vite, normally http://localhost:5173 .
+
+5) TEST THE MAIN WORKFLOW
+- Register a Dataset Owner account.
+- Register a separate Annotator account.
+- Sign in as Owner: upload a small CSV/text file, create a project, assign a task to the Annotator.
+- Sign in as Annotator: open Labeling Studio, enter a text sample, click Suggest label, verify/edit the suggestion, submit the label.
+- For review demo, register a third account and promote it to reviewer in MySQL Workbench:
+      UPDATE labelai.users SET role='REVIEWER' WHERE email='reviewer@example.com';
+  Replace the email. Sign out and sign in with that account again.
+
+6) REVIEW DELIVERABLES
+- Swagger: http://localhost:8080/swagger-ui/index.html
+- Health: http://localhost:8080/api/health
+- Diagrams and review scripts are inside docs/.
+- Run tests before review: from backend folder run .\mvnw.cmd -B clean verify; from frontend folder run npm run build.
+
+IMPORTANT HONEST LIMITS
+- The AI suggestion is a keyword-based prototype, not a trained ML model.
+- Cloud deployment is configured as a starting point, but this ZIP does not create cloud accounts, database credentials, public URLs, screenshots, video, or real GitHub commits for you. Follow docs/DEPLOYMENT_GUIDE.md and update README with actual URLs after deployment.
+- Local uploaded files are stored on disk; production hosting needs persistent/object storage.

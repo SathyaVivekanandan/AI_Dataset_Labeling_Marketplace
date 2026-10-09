@@ -8,13 +8,14 @@ import com.labelai.backend.repository.ProjectRepository;
 import com.labelai.backend.repository.UserRepository;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
-@CrossOrigin(origins = "*")
 public class ProjectController {
 
     private final ProjectRepository projectRepository;
@@ -43,6 +44,7 @@ public class ProjectController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<?> createProject(
             @RequestParam Long datasetId,
@@ -56,13 +58,11 @@ public class ProjectController {
                 .orElse(null);
 
         if (dataset == null) {
-            return ResponseEntity.badRequest()
-                    .body("Dataset not found");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "data", Map.of(), "message", "Dataset not found"));
         }
 
         if (owner == null) {
-            return ResponseEntity.badRequest()
-                    .body("Owner not found");
+            return ResponseEntity.badRequest().body(Map.of("success", false, "data", Map.of(), "message", "Owner not found"));
         }
 
         Project project = new Project(
@@ -74,8 +74,9 @@ public class ProjectController {
         return ResponseEntity.ok(projectRepository.save(project));
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteProject(@PathVariable Long id) {
 
         if (!projectRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -83,7 +84,7 @@ public class ProjectController {
 
         projectRepository.deleteById(id);
 
-        return ResponseEntity.ok("Project deleted successfully");
+        return ResponseEntity.ok(Map.of("message", "Project deleted successfully"));
     }
 
     public static class ProjectRequest {
