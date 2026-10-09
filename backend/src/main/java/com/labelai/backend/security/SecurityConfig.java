@@ -99,9 +99,13 @@ public class SecurityConfig {
                 // Authentication APIs
                 .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
 
-                // Health check
-                .requestMatchers("/api/health", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
+                // Health check and API documentation
+.requestMatchers(
+    "/api/health",
+    "/actuator/health",
+    "/swagger-ui/**",
+    "/v3/api-docs/**"
+).permitAll()
                 // Everything else requires JWT
                 .anyRequest().authenticated()
             )
