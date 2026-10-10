@@ -322,7 +322,8 @@ async function createDataset() {
 
         formData.append("file", file);
 
-
+        console.log("Token exists:", !!me?.token);
+        console.log("Token value:", me?.token ? "Present" : "Missing");
         // File upload needs JWT too
         const uploadResponse = await fetch(
             API + "/files/upload",
