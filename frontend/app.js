@@ -380,36 +380,39 @@ async function createDataset() {
 }
 
 
-// ===============================
-// CREATE PROJECT
-// ===============================
-async function createProject() {
 
+async function createProject() {
     try {
+        const projectName = $("pname").value.trim();
+        const datasetId = $("pdataset").value;
+
+        if (!projectName) {
+            alertMsg("Please enter a project name", "danger");
+            return;
+        }
+
+        if (!datasetId) {
+            alertMsg("Please select a dataset", "danger");
+            return;
+        }
 
         await req(
-            `/projects?datasetId=${$("pdataset").value}&ownerId=${me.id}`,
+            `/projects?datasetId=${encodeURIComponent(datasetId)}&ownerId=${encodeURIComponent(me.id)}`,
             {
                 method: "POST",
-
                 body: JSON.stringify({
-                    projectName: $("pname").value
+                    projectName: projectName
                 })
             }
         );
 
-
         alertMsg("Project created successfully");
-
         await load();
 
-
     } catch (e) {
-
         alertMsg(e.message, "danger");
     }
 }
-
 
 // ===============================
 // CREATE TASK

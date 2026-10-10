@@ -258,36 +258,46 @@
     </div>
 
 
-    <!-- Project -->
+   
+<!-- Project -->
 
-    <div class="card p-4">
+<div class="card p-4">
 
-        <h4 class="section-title">Create Project</h4>
+    <h4 class="section-title">Create Project</h4>
 
-        <div class="row">
-
-            <div class="col-md-6">
-                <input id="pname"
-                       class="form-control"
-                       placeholder="Project name">
-            </div>
-
-            <div class="col-md-6">
-                <select id="pdataset"
-                        class="form-select">
-                    <option>Select Dataset</option>
-                </select>
-            </div>
-
-        </div>
-
-        <button class="btn btn-success mt-3"
-                onclick="createProject()">
-            Create Project
-        </button>
-
+    <div class="mb-3">
+        <label for="pname" class="form-label">Project Name</label>
+        <input
+            id="pname"
+            class="form-control"
+            placeholder="e.g. Customer Sentiment Analysis"
+            required>
     </div>
 
+    <div class="mb-3">
+        <label for="pdescription" class="form-label">Description</label>
+        <textarea
+            id="pdescription"
+            class="form-control"
+            rows="3"
+            placeholder="Describe the purpose of this labeling project"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label for="pdataset" class="form-label">Select Dataset</label>
+        <select id="pdataset" class="form-select" required>
+            <option value="">Select Dataset</option>
+        </select>
+    </div>
+
+    <button
+        type="button"
+        class="btn btn-success mt-2"
+        onclick="createProject()">
+        Create Project
+    </button>
+
+</div>
 
     <!-- Task -->
 
