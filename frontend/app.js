@@ -168,141 +168,162 @@ function logout() {
 // ===============================
 // LOAD DASHBOARD DATA
 // ===============================
+
 async function load() {
-
     try {
+        const [
+            datasetsResponse,
+            projectsResponse,
+            tasksResponse,
+            annotationsResponse,
+            reviewsResponse,
+            usersResponse
+        ] = await Promise.all([
+            req("/datasets"),
+            req("/projects"),
+            req("/tasks"),
+            req("/annotations"),
+            req("/reviews"),
+            req("/auth/users")
+        ]);
 
-       
-const [
-    datasetsResponse,
-    projectsResponse,
-    tasksResponse,
-    annotationsResponse,
-    reviewsResponse,
-    usersResponse
-] = await Promise.all([
-    req("/datasets"),
-    req("/projects"),
-    req("/tasks"),
-    req("/annotations"),
-    req("/reviews"),
-    req("/auth/users")
-]);
+        // Read API response arrays
+        const getArray = (response) => {
+            if (Array.isArray(response)) return response;
+            if (Array.isArray(response?.data)) return response.data;
+            if (Array.isArray(response?.data?.content)) {
+                return response.data.content;
+            }
+            if (Array.isArray(response?.content)) {
+                return response.content;
+            }
+            return [];
+        };
 
-// Support both direct arrays and wrapped API responses
-const getArray = (response) => {
-    if (Array.isArray(response)) return response;
-    if (Array.isArray(response?.data)) return response.data;
-    if (Array.isArray(response?.data?.content)) return response.data.content;
-    if (Array.isArray(response?.content)) return response.content;
-    return [];
-};
+        const datasets = getArray(datasetsResponse);
+        const projects = getArray(projectsResponse);
+        const tasks = getArray(tasksResponse);
+        const annotations = getArray(annotationsResponse);
+        const reviews = getArray(reviewsResponse);
+        const users = getArray(usersResponse);
 
-const datasets = getArray(datasetsResponse);
-const projects = getArray(projectsResponse);
-const tasks = getArray(tasksResponse);
-const annotations = getArray(annotationsResponse);
-const reviews = getArray(reviewsResponse);
-const users = getArray(usersResponse);
+        console.log("Datasets:", datasets);
+        console.log("Projects:", projects);
+        console.log("Tasks:", tasks);
+        console.log("Annotations:", annotations);
+        console.log("Reviews:", reviews);
 
-
-        // ===============================
-        // DASHBOARD COUNTS
-        // ===============================
-
+        // Dashboard counts
         $("datasetCount").textContent = datasets.length;
-
         $("projectCount").textContent = projects.length;
-
         $("taskCount").textContent = tasks.length;
-
         $("reviewCount").textContent = reviews.length;
 
-
-        // ===============================
-        // DATASET DROPDOWN
-        // ===============================
-
+        // Dataset dropdown
         $("pdataset").innerHTML =
-            datasets.map(dataset =>
-                `<option value="${dataset.id}">
-                    ${dataset.title}
-                </option>`
-            ).join("");
+            `<option value="">Select Dataset</option>` +
+            datasets.map(dataset => `
+                <option value="${dataset.id}">
+                    ${dataset.title || "Untitled Dataset"}
+                </option>
+            `).join("");
 
-
-        // ===============================
-        // PROJECT DROPDOWN
-        // ===============================
-
+        // Project dropdown
         $("tproject").innerHTML =
-            projects.map(project =>
-                `<option value="${project.id}">
-                    ${project.projectName}
-                </option>`
-            ).join("");
+            `<option value="">Select Project</option>` +
+            projects.map(project => `
+                <option value="${project.id}">
+                    ${project.projectName || project.name || "Unnamed Project #" + project.id}
+                </option>
+            `).join("");
 
-
-        // ===============================
-        // ANNOTATOR DROPDOWN
-        // ===============================
-
+        // Annotator dropdown
         $("tannotator").innerHTML =
-            users
-                .filter(user => user.role === "ANNOTATOR")
-                .map(user =>
-                    `<option value="${user.id}">
+            `<option value="">Select Annotator</option>` +
+            users.filter(user => user.role === "ANNOTATOR")
+                .map(user => `
+                    <option value="${user.id}">
                         ${user.name} (${user.email})
-                    </option>`
-                )
-                .join("");
+                    </option>
+                `).join("");
 
-
-        // ===============================
-        // TASK DROPDOWN
-        // ===============================
-
+        // Task dropdown
         $("atask").innerHTML =
-            tasks.map(task =>
-                `<option value="${task.id}">
-                    Task #${task.id} - ${task.project.projectName}
-                </option>`
-            ).join("");
+            `<option value="">Select Task</option>` +
+            tasks.map(task => `
+                <option value="${task.id}">
+                    Task #${task.id} - ${
+                        task.project?.projectName ||
+                        task.project?.name ||
+                        "Project #" + (task.project?.id ?? "-")
+                    }
+                </option>
+            `).join("");
 
-
-        // ===============================
-        // ANNOTATION DROPDOWN
-        // ===============================
-
+        // Annotation dropdown
         $("rannotation").innerHTML =
-            annotations.map(annotation =>
-                `<option value="${annotation.id}">
-                    Annotation #${annotation.id} - Task #${annotation.task.id}
-                </option>`
-            ).join("");
+            `<option value="">Select Annotation</option>` +
+            annotations.map(annotation => `
+                <option value="${annotation.id}">
+                    Annotation #${annotation.id} - Task #${
+                        annotation.task?.id ?? "-"
+                    }
+                </option>
+            `).join("");
 
+        // Projects table
+        $("projectTable").innerHTML = projects.length
+            ? projects.map(project => `
+                <tr>
+                    <td>${project.id ?? "-"}</td>
+                    <td>${project.projectName || project.name || "Unnamed Project #" + project.id}</td>
+                    <td>${project.dataset?.title || "Dataset #" + (project.dataset?.id ?? "-")}</td>
+                    <td>${project.status ?? "Unknown"}</td>
+                </tr>
+            `).join("")
+            : `<tr><td colspan="4">No projects found</td></tr>`;
 
-        // ===============================
-        // PROJECT TABLE
-        // ===============================
+        // Assigned tasks table
+        $("taskTable").innerHTML = tasks.length
+            ? tasks.map(task => `
+                <tr>
+                    <td>${task.id ?? "-"}</td>
+                    <td>${task.project?.projectName || task.project?.name || "Project #" + (task.project?.id ?? "-")}</td>
+                    <td>${task.annotator?.name || task.assignedTo?.name || task.user?.name || "-"}</td>
+                    <td>${task.status ?? "Unknown"}</td>
+                </tr>
+            `).join("")
+            : `<tr><td colspan="4">No tasks found</td></tr>`;
 
-        $("projectTable").innerHTML =
-            projects.map(project =>
-                `<tr>
-                    <td>${project.id}</td>
-                    <td>${project.projectName}</td>
-                    <td>${project.dataset.title}</td>
-                    <td>${project.status}</td>
-                </tr>`
-            ).join("");
+        // Submitted annotations table
+        $("annotationTable").innerHTML = annotations.length
+            ? annotations.map(annotation => `
+                <tr>
+                    <td>${annotation.id ?? "-"}</td>
+                    <td>${annotation.task?.id ?? "-"}</td>
+                    <td>${annotation.label ?? "-"}</td>
+                    <td>${annotation.status ?? "Submitted"}</td>
+                </tr>
+            `).join("")
+            : `<tr><td colspan="4">No annotations found</td></tr>`;
 
+        // Reviews table
+        $("reviewTable").innerHTML = reviews.length
+            ? reviews.map(review => `
+                <tr>
+                    <td>${review.id ?? "-"}</td>
+                    <td>${review.annotation?.id ?? "-"}</td>
+                    <td>${review.reviewStatus ?? review.status ?? "Unknown"}</td>
+                    <td>${review.remarks ?? "-"}</td>
+                </tr>
+            `).join("")
+            : `<tr><td colspan="4">No reviews found</td></tr>`;
 
     } catch (e) {
-
+        console.error("Dashboard loading failed:", e);
         alertMsg(e.message, "danger");
     }
 }
-
 
 // ===============================
 // CREATE DATASET
@@ -535,7 +556,7 @@ if ($("logout")) {
 
 
 // ===============================
-// AUTO LOGIN
+ // AUTO LOGIN
 // ===============================
 if (me && me.token) {
 

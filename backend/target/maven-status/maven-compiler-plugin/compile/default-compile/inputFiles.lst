@@ -27,5 +27,6 @@ C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\ba
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\repository\UserRepository.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\security\JwtAuthenticationFilter.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\security\JwtService.java
+C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\security\ReviewerPasswordResetRunner.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\security\SecurityConfig.java
 C:\Users\rvsat\Downloads\Capstone1\Capstone\backend\src\main\java\com\labelai\backend\service\UserService.java
